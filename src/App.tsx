@@ -1,15 +1,16 @@
-import {ThemeProvider} from 'styled-components'
+import './App.css';
+import PersonIndex from './components/Person/PersonIndex';
 
 function App() {
-
   return (
-    <>
-      <ThemeProvider theme={undefined}>
-
-
-      </ThemeProvider>
-    </>
-  )
+    <div className="App">
+      <header className="App-header">
+      </header>
+      <main className="App-main">
+        <PersonIndex/>
+      </main>
+    </div>
+  );
 }
 
-export default App
+export default App;
