@@ -1,4 +1,5 @@
 export interface Person {
+    id: string | null;
     name: string;
     surname: string;
     cpf: string;
@@ -6,11 +7,13 @@ export interface Person {
     birthday: Date | undefined;
 }
 
-export interface PersonQuery{
+export interface PersonQuery {
     name: string;
+    cpf: string;
 }
 
 export const PERSON_INITIALIZER: Person = {
+    id: null,
     name: "",
     surname: "",
     email: "",
@@ -19,11 +22,13 @@ export const PERSON_INITIALIZER: Person = {
 }
 
 export const PERSON_QUERY_INITIALIZER: PersonQuery = {
-    name:''
+    name: '',
+    cpf: '',
 }
 
 export const PersonLIstMock: Person[] = [
     {
+        id: "test-id",
         name: "Felipe",
         surname: "Pinheiro",
         email: "felipe.pinheiro@react.com",
