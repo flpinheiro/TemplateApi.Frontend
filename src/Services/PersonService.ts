@@ -5,7 +5,6 @@ import api from "./api";
 class PersonService {
     getPerson(query: PersonQuery) {
         const searchParams =  new URLSearchParams({...query});
-        console.log("get person", searchParams.toString())
         return api.get<Person[]>(`/person?${searchParams.toString()}`);
     }
 

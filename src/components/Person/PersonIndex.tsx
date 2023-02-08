@@ -21,10 +21,10 @@ const PersonIndex = () => {
     const personService = new PersonService()
 
     useEffect(() => {
-        console.log("First call on mount..");
-        fetchPeople();
-        return () => console.log("Cleanup..");
-    }, []);
+        if(query === PERSON_QUERY_INITIALIZER){
+            fetchPeople();
+        }
+    }, [query]);
 
     const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -45,9 +45,7 @@ const PersonIndex = () => {
 
     const onResetQuery = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         event.preventDefault();
-        setQuery(PERSON_QUERY_INITIALIZER);
-        fetchPeople();
-        
+        setQuery(PERSON_QUERY_INITIALIZER);        
     }
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement> | InputMaskChangeEvent | CalendarChangeEvent) => {
@@ -61,7 +59,6 @@ const PersonIndex = () => {
     const fetchPeople = () => {
         personService.getPerson(query)
             .then(response => {
-                console.log(response.data)
                 setPeople(response.data)
             })
             .catch(err => console.log(err));
