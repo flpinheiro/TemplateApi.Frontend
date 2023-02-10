@@ -1,40 +1,36 @@
+import { useEffect, useState } from "react";
 import { CalendarChangeEvent } from "primereact/calendar";
 import { InputMaskChangeEvent } from "primereact/inputmask";
-
+import { Button } from "primereact/button";
 import { Dialog } from 'primereact/dialog';
-
-import { useEffect, useState } from "react";
-import { Person,  PersonQuery, PERSON_INITIALIZER, PERSON_QUERY_INITIALIZER } from "../../models/person";
+import { Person, PersonQuery, PERSON_INITIALIZER, PERSON_QUERY_INITIALIZER } from "../../models/person";
+import PersonService from "../../Services/PersonService";
 import PersonForm from "./PersonForm";
 import PersonList from "./PersonList";
-import { Button } from "primereact/button";
 import PersonSearch from "./PersonSearch";
-import PersonService from "../../Services/PersonService";
-
 
 const PersonIndex = () => {
     const [query, setQuery] = useState<PersonQuery>(PERSON_QUERY_INITIALIZER);
     const [person, setPerson] = useState<Person>(PERSON_INITIALIZER);
     const [people, setPeople] = useState<Person[]>([]);
     const [visible, setVisible] = useState(false);
-    
+
     const personService = new PersonService()
 
     useEffect(() => {
-        if(query === PERSON_QUERY_INITIALIZER){
+        if (query === PERSON_QUERY_INITIALIZER) {
             fetchPeople();
         }
     }, [query]);
 
     const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        console.log("submit", person)
-        setPeople([...people, person])
-        setPerson(PERSON_INITIALIZER);
-        fetchPeople();
-        setVisible(false);
         personService.submitPerson(person)
-            .then(data => console.log(data))
+            .then(response => {
+                setPerson(PERSON_INITIALIZER);
+                setVisible(false);
+                fetchPeople();
+            })
             .catch(err => console.log(err));
     }
 
@@ -45,14 +41,14 @@ const PersonIndex = () => {
 
     const onResetQuery = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         event.preventDefault();
-        setQuery(PERSON_QUERY_INITIALIZER);        
+        setQuery(PERSON_QUERY_INITIALIZER);
     }
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement> | InputMaskChangeEvent | CalendarChangeEvent) => {
         setPerson({ ...person, [event.target.name]: event.target.value });
     }
 
-    const handleChangeQuery = (event: React.ChangeEvent<HTMLInputElement> ) => {
+    const handleChangeQuery = (event: React.ChangeEvent<HTMLInputElement>) => {
         setQuery({ ...query, [event.target.name]: event.target.value });
     }
 
@@ -64,6 +60,19 @@ const PersonIndex = () => {
             .catch(err => console.log(err));
     }
 
+    const onEdit = (id: string) => {
+        personService.getPersonById(id)
+            .then(response=> response.data)
+            .then(data => {
+                setPerson(data);
+                setVisible(true);
+            })
+            .catch(err => console.log(err));
+    }
+    const onDelete = (id: string) => {
+        console.log("on delete", id)
+    }
+
     return (
         <>
             <h1>Person</h1>
@@ -72,8 +81,8 @@ const PersonIndex = () => {
                 style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
                 <PersonForm onSubmit={onSubmit} handleChange={handleChange} person={person} />
             </Dialog>
-            <PersonSearch query={query}  handleChange={handleChangeQuery} onSubmit={onSubmitQuery} onReset={onResetQuery}/>
-            <PersonList list={people} />
+            <PersonSearch query={query} handleChange={handleChangeQuery} onSubmit={onSubmitQuery} onReset={onResetQuery} />
+            <PersonList list={people} onEdit={onEdit} onDelete={onDelete} />
         </>);
 }
 
