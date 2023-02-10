@@ -24,12 +24,12 @@ const PersonForm = ({ onSubmit, handleChange, person }: PersonFormProps) => {
             </span>
 
             <span className="p-float-label">
-                <InputMask id="cpf" name="cpf" mask="999.999.999-99" />
+                <InputMask id="cpf" name="cpf" mask="999.999.999-99" onChange={handleChange} value={person.cpf} />
                 <label htmlFor="cpf">CPF</label>
             </span>
 
             <span className="p-float-label">
-                <Calendar id="calendar" value={person.birthday} onChange={handleChange} dateFormat="dd/mm/yy" maxDate={new Date()} placeholder="enter birthday"/>
+                <Calendar id="birthday" name="birthday" value={person.birthday} onChange={handleChange} dateFormat="dd/mm/yy" maxDate={new Date()} placeholder="enter birthday"/>
                 <label htmlFor="cpf">birthday</label>
             </span>
 

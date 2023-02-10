@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL : process.env.PERSON_API ?? "https://localhost:7189/api",
+    baseURL : process.env.REACT_APP_PERSON_API,
     headers: {"Access-Control-Allow-Origin": "*"}
 
 });

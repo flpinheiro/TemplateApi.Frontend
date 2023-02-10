@@ -7,18 +7,20 @@ const PersonSearch = ({ query, handleChange, onSubmit, onReset }: PersonSearchPr
     return (<>
 
         <form onSubmit={onSubmit}>
-            <span className="p-float-label">
-                <InputText id="name" name="name" onChange={handleChange} value={query.name} />
-                <label htmlFor="name">Name</label>
-            </span>
+            <div>
+                <span className="p-float-label">
+                    <InputText id="name" name="name" onChange={handleChange} value={query.name} />
+                    <label htmlFor="name">Name</label>
+                </span>
 
-            <span className="p-float-label">
-                <InputText id="cpf" name="cpf" onChange={handleChange} value={query.cpf} />
-                <label htmlFor="cpf">CPF</label>
-            </span>
+                <span className="p-float-label">
+                    <InputText id="cpf" name="cpf" onChange={handleChange} value={query.cpf} />
+                    <label htmlFor="cpf">CPF</label>
+                </span>
 
-            <Button label="Submit" aria-label="Submit" />
-            <Button label="Reset" aria-label="Reset" onClick={onReset} />
+                <Button label="Submit" aria-label="Submit" />
+                <Button label="Reset" aria-label="Reset" onClick={onReset} />
+            </div>
         </form>
 
     </>);
