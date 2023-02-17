@@ -2,7 +2,7 @@ import { Person } from "../../models/person";
 import { InputText } from 'primereact/inputtext';
 import { Calendar } from 'primereact/calendar';
 import { Button } from 'primereact/button';
-import { useEffect, useState } from "react";
+import { MouseEventHandler, useEffect, useState ,MouseEvent  } from "react";
 
 const PersonForm = ({ onSubmit, id, person }: PersonFormProps) => {
     const [name, setName] = useState('')
@@ -19,7 +19,8 @@ const PersonForm = ({ onSubmit, id, person }: PersonFormProps) => {
         setEmail(person.Email);
     }, [person]);
 
-    const handleReset = () => {
+    const handleReset = (event?: MouseEvent<HTMLButtonElement>) => {
+        event?.preventDefault();
         setName(person.Name);
         setSurname(person.Surname);
         setBirthday(person.Birthday);
@@ -68,7 +69,7 @@ const PersonForm = ({ onSubmit, id, person }: PersonFormProps) => {
             </span>
 
             <Button label="Submit" aria-label="Submit" />
-            <Button label="Reset" aria-label="Reset" onClick={() => handleReset()} />
+            <Button label="Reset" aria-label="Reset" onClick={handleReset} />
         </div>
     </form>);
 }

@@ -18,7 +18,7 @@ const PersonIndex = () => {
     const personService = new PersonService();
 
     useEffect(() => {
-        fetchPeople(query);
+        fetchPeople();
     }, [query]);
 
     const onSubmit = (person: Person) => {
@@ -32,7 +32,7 @@ const PersonIndex = () => {
             .catch(err => console.log(err));
     }
 
-    const fetchPeople = (query: PersonQuery) => {
+    const fetchPeople = () => {
         personService.getPerson(query)
             .then(response => {
                 setPeople(response.data)
@@ -40,7 +40,7 @@ const PersonIndex = () => {
             .catch(err => console.log(err));
     }
 
-    const onAddnew  = () => {
+    const onAddnew = () => {
         setId(undefined);
         setPerson(PERSON_INITIALIZER);
         setVisible(true)
@@ -48,19 +48,19 @@ const PersonIndex = () => {
 
     const onEdit = (id: string) => {
         personService.getPersonById(id)
-            .then(response=> response.data)
-            .then(data=> {
-                const person: Person = {...data, Birthday: stringToDate(data.Birthday)}
-                console.log("fetch person",person)
+            .then(response => response.data)
+            .then(data => {
+                const person: Person = { ...data, Birthday: stringToDate(data.Birthday) }
+                console.log("fetch person", person)
                 setId(id);
                 setPerson(person);
-                setVisible(true);            
+                setVisible(true);
             })
-            .catch(err=> console.log(err));
+            .catch(err => console.log(err));
     }
     const onDelete = (id: string) => {
         personService.deletePerson(id)
-            .then(response => console.log(response))
+            .then(() => fetchPeople())
             .catch(err => console.log(err));
     }
 
