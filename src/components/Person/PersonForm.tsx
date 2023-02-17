@@ -2,7 +2,7 @@ import { Person } from "../../models/person";
 import { InputText } from 'primereact/inputtext';
 import { Calendar } from 'primereact/calendar';
 import { Button } from 'primereact/button';
-import { MouseEventHandler, useEffect, useState ,MouseEvent  } from "react";
+import { useEffect, useState ,MouseEvent  } from "react";
 
 const PersonForm = ({ onSubmit, id, person }: PersonFormProps) => {
     const [name, setName] = useState('')

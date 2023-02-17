@@ -18,7 +18,7 @@ jobs:
     - name: Use Node.js 19.x
       uses: actions/setup-node@v1
       with:
-        node-version: 10.x
+        node-version: 19.x
     - run: npm ci
     - run: npm run build --if-present
     # - run: npm test
@@ -43,6 +43,6 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: ./TemplateApi/Dockerfile
+          file: ./Dockerfile
           push: true
-          tags: flpinheiro/template_frontend:latest
+          tags: flpinheiro/template_frontend:latest,flpinheiro/template_frontend:${{github.run_number}}

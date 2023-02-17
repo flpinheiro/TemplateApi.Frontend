@@ -19,6 +19,7 @@ const PersonIndex = () => {
 
     useEffect(() => {
         fetchPeople();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [query]);
 
     const onSubmit = (person: Person) => {
