@@ -2,7 +2,7 @@ import { Person, PersonQuery } from "../models/person";
 import api from "./api";
 
 
-function formatDate(date: Date | undefined): string {
+function formatDate(date: Date| string | undefined): string {
     if (date === undefined) return '';
     var d = new Date(date),
         month = '' + (d.getMonth() + 1),
@@ -28,11 +28,11 @@ class PersonService {
     }
 
     submitPerson(person: Person) {
-        let data = { ...person, birthday: formatDate(person.birthday) }
+        let data = { ...person, birthday: formatDate(person.Birthday) }
         console.log("subimit person", data, JSON.stringify(data));
 
-        return person.id ?
-            api.put(`/person/${person.id}`, data) :
+        return person.Id ?
+            api.put(`/person/${person.Id}`, data) :
             api.post('/person', data);
     }
 

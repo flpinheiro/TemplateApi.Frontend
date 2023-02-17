@@ -3,19 +3,21 @@ import { InputText } from "primereact/inputtext";
 import { useEffect, useState } from "react";
 import { PersonQuery, PERSON_QUERY_INITIALIZER } from "../../models/person";
 
-const PersonSearch = ({ onSubmit }: PersonSearchProps) => {
+const PersonSearch = ({ setQuery, query }: PersonSearchProps) => {
     const [name, setName] = useState('');
     const [cpf, setCpf] = useState('');
-    const [query, setQuery] = useState<PersonQuery>(PERSON_QUERY_INITIALIZER)
 
     useEffect(() => {
-        onSubmit(query);
-    }, [query]);
+        if(query.name!== name || query.cpf!== cpf){
+            setName(query.name);
+            setCpf(query.cpf);
+        }
+    }, [query])
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        let data: PersonQuery = { name: name, cpf: cpf };
-        setQuery(data);
+        let query: PersonQuery = { name: name, cpf: cpf };
+        setQuery(query);
     }
 
     const handleReset = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -46,7 +48,8 @@ const PersonSearch = ({ onSubmit }: PersonSearchProps) => {
 }
 
 export interface PersonSearchProps {
-    onSubmit: (query: PersonQuery) => void
+    setQuery: (state: PersonQuery) => void;
+    query: PersonQuery;
 }
 
 export default PersonSearch;

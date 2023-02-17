@@ -1,41 +1,38 @@
-import { useState } from "react";
-import { CalendarChangeEvent } from "primereact/calendar";
-import { InputMaskChangeEvent } from "primereact/inputmask";
+import { useEffect, useState } from "react";
 import { Button } from "primereact/button";
 import { Dialog } from 'primereact/dialog';
-import { Person, PersonQuery, PERSON_INITIALIZER } from "../../models/person";
+import { Person, PersonQuery, PERSON_INITIALIZER, PERSON_QUERY_INITIALIZER } from "../../models/person";
 import PersonService from "../../Services/PersonService";
 import PersonForm from "./PersonForm";
 import PersonList from "./PersonList";
 import PersonSearch from "./PersonSearch";
+import { stringToDate } from "../../helpers/PersonHelpers";
 
 const PersonIndex = () => {
-    const [person, setPerson] = useState<Person>(PERSON_INITIALIZER);
+    const [id, setId] = useState<string>()
     const [people, setPeople] = useState<Person[]>([]);
+    const [query, setQuery] = useState<PersonQuery>(PERSON_QUERY_INITIALIZER);
+    const [person, setPerson] = useState<Person>(PERSON_INITIALIZER);
+
     const [visible, setVisible] = useState(false);
+    const personService = new PersonService();
 
-    const personService = new PersonService()
+    useEffect(() => {
+        fetchPeople(query);
+    }, [query]);
 
-    const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
+    const onSubmit = (person: Person) => {
         personService.submitPerson(person)
             .then(response => {
-                setPerson(PERSON_INITIALIZER);
                 setVisible(false);
-                //fetchPeople();
+                setQuery(PERSON_QUERY_INITIALIZER);
+                return response.data;
             })
+            .then(data => console.log(data))
             .catch(err => console.log(err));
     }
 
-    const onSubmitQuery = (query: PersonQuery) => {
-        fetchPeople(query);
-    }
-
-   const handleChange = (event: React.ChangeEvent<HTMLInputElement> | InputMaskChangeEvent | CalendarChangeEvent) => {
-        setPerson({ ...person, [event.target.name]: event.target.value });
-    }
-
-    const fetchPeople = (query:PersonQuery) => {
+    const fetchPeople = (query: PersonQuery) => {
         personService.getPerson(query)
             .then(response => {
                 setPeople(response.data)
@@ -43,28 +40,39 @@ const PersonIndex = () => {
             .catch(err => console.log(err));
     }
 
+    const onAddnew  = () => {
+        setId(undefined);
+        setPerson(PERSON_INITIALIZER);
+        setVisible(true)
+    }
+
     const onEdit = (id: string) => {
         personService.getPersonById(id)
             .then(response=> response.data)
-            .then(data => {
-                setPerson(data);
-                setVisible(true);
+            .then(data=> {
+                const person: Person = {...data, Birthday: stringToDate(data.Birthday)}
+                console.log("fetch person",person)
+                setId(id);
+                setPerson(person);
+                setVisible(true);            
             })
-            .catch(err => console.log(err));
+            .catch(err=> console.log(err));
     }
     const onDelete = (id: string) => {
-        console.log("on delete", id)
+        personService.deletePerson(id)
+            .then(response => console.log(response))
+            .catch(err => console.log(err));
     }
 
     return (
         <>
             <h1>Person</h1>
-            <Button label="Add new Person" icon="pi pi-plus" onClick={() => setVisible(true)} />
+            <Button label="Add new Person" icon="pi pi-plus" onClick={() => onAddnew()} />
             <Dialog header="Add new Person" visible={visible} onHide={() => setVisible(false)}
                 style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
-                <PersonForm onSubmit={onSubmit} handleChange={handleChange} person={person} />
+                <PersonForm person={person} onSubmit={onSubmit} id={id} />
             </Dialog>
-            <PersonSearch onSubmit={onSubmitQuery} />
+            <PersonSearch query={query} setQuery={setQuery} />
             <PersonList list={people} onEdit={onEdit} onDelete={onDelete} />
         </>);
 }
