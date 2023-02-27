@@ -16,8 +16,17 @@ class PersonService {
                 {
                     responseType: 'blob'
                 });
+
+            const today = new Date();
+            const dd = String(today.getDate()).padStart(2, '0');
+            const mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+            const yyyy = String(today.getFullYear());
+            const hh = String(today.getHours()).padStart(2, '0');
+            const MM = String(today.getMinutes()).padStart(2, '0');
+            const todayStr = `${yyyy}_${mm}_${dd}_${hh}_${MM}`;
+            const filename = `people_${todayStr}.xlsx`;
             const blob = new Blob([response.data], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
-            saveAs(blob);
+            saveAs(blob, filename);
         } catch (err) {
             return console.log(err);
         }
