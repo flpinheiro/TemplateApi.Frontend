@@ -34,7 +34,7 @@ const PersonIndex = () => {
     }
 
     const fetchPeople = () => {
-        personService.getPerson(query)
+        personService.getPeople(query)
             .then(response => {
                 setPeople(response.data)
             })
@@ -48,7 +48,7 @@ const PersonIndex = () => {
     }
 
     const onEdit = (id: string) => {
-        personService.getPersonById(id)
+        personService.getPerson(id)
             .then(response => response.data)
             .then(data => {
                 const person: Person = { ...data, Birthday: stringToDate(data.Birthday) }
@@ -65,6 +65,10 @@ const PersonIndex = () => {
             .catch(err => console.log(err));
     }
 
+    const exportToExcel = () => {
+        personService.exportPeopleToExcel(query);
+    }
+
     return (
         <>
             <h1>Person</h1>
@@ -74,6 +78,7 @@ const PersonIndex = () => {
                 <PersonForm person={person} onSubmit={onSubmit} id={id} />
             </Dialog>
             <PersonSearch query={query} setQuery={setQuery} />
+            <Button label="Export To Excel" onClick={() => exportToExcel()} />
             <PersonList list={people} onEdit={onEdit} onDelete={onDelete} />
         </>);
 }
