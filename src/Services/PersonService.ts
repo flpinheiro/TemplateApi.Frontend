@@ -1,11 +1,17 @@
 import { formatDate } from "../helpers/PersonHelpers";
-import { Person, PersonQuery } from "../models/person";
+import { Pagination, PaginationResponse, Person, PersonQuery } from "../models/person";
 import api, { controller } from "./api";
 import { saveAs } from 'file-saver';
 
 class PersonService {
-    getPeople(query: PersonQuery) {
+
+    countPage(query: PersonQuery) {
         const searchParams = new URLSearchParams({ ...query });
+        return api.get<PaginationResponse>(`/person/Count?${searchParams.toString()}`);
+    }
+
+    getPeople(query: PersonQuery, pageQuery: Pagination) {
+        const searchParams = new URLSearchParams({ ...query, PageSize: pageQuery.Row.toString(), Page: pageQuery.Page.toString() });
         return api.get<Person[]>(`/person?${searchParams.toString()}`);
     }
 

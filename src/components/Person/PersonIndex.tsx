@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { Button } from "primereact/button";
 import { Dialog } from 'primereact/dialog';
-import { Person, PersonQuery, PERSON_INITIALIZER, PERSON_QUERY_INITIALIZER } from "../../models/person";
+import { Paginator, PaginatorPageChangeEvent } from 'primereact/paginator';
+import { Pagination, Person, PersonQuery, PERSON_INITIALIZER, PERSON_QUERY_INITIALIZER, PAGINATION_INITIALIZER } from "../../models/person";
 import PersonService from "../../Services/PersonService";
 import PersonForm from "./PersonForm";
 import PersonList from "./PersonList";
@@ -13,14 +14,23 @@ const PersonIndex = () => {
     const [people, setPeople] = useState<Person[]>([]);
     const [query, setQuery] = useState<PersonQuery>(PERSON_QUERY_INITIALIZER);
     const [person, setPerson] = useState<Person>(PERSON_INITIALIZER);
-
+    const [pagesQuery, setPagesQuery] = useState<Pagination>(PAGINATION_INITIALIZER);
+    const [totalRecords, setTotalRecords] = useState<number>(0);
+    const [first, setFirst] = useState<number>(0);
     const [visible, setVisible] = useState(false);
+
     const personService = new PersonService();
+
+    const onPageChange = (event: PaginatorPageChangeEvent) => {
+        setFirst(event.first);
+        setPagesQuery({ ...pagesQuery, Row: event.rows, Page: event.page })
+    };
 
     useEffect(() => {
         fetchPeople();
+        fetchCount();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [query]);
+    }, [query, pagesQuery]);
 
     const onSubmit = (person: Person) => {
         personService.submitPerson(person)
@@ -34,9 +44,17 @@ const PersonIndex = () => {
     }
 
     const fetchPeople = () => {
-        personService.getPeople(query)
+        personService.getPeople(query, pagesQuery)
             .then(response => {
                 setPeople(response.data)
+            })
+            .catch(err => console.log(err));
+    }
+    const fetchCount = () => {
+        personService.countPage(query)
+            .then(response => response.data)
+            .then(data => {
+                setTotalRecords(data.Total);
             })
             .catch(err => console.log(err));
     }
@@ -72,14 +90,24 @@ const PersonIndex = () => {
     return (
         <>
             <h1>Person</h1>
-            <Button label="Add new Person" icon="pi pi-plus" onClick={() => onAddnew()} />
+            <span className="p-buttonset">
+                <Button label="Add new Person" icon="pi pi-plus" onClick={() => onAddnew()} />
+            </span>
             <Dialog header="Add new Person" visible={visible} onHide={() => setVisible(false)}
                 style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
                 <PersonForm person={person} onSubmit={onSubmit} id={id} />
             </Dialog>
-            <PersonSearch query={query} setQuery={setQuery} />
-            <Button label="Export To Excel" onClick={() => exportToExcel()} />
+            <PersonSearch query={query} setQuery={setQuery} setPagesQuery={setPagesQuery} />
+
+            <span className="p-buttonset">
+                <Button label="Export To Excel" onClick={() => exportToExcel()} />
+            </span>
+
             <PersonList list={people} onEdit={onEdit} onDelete={onDelete} />
+
+            <div className="card">
+                <Paginator first={first} rows={pagesQuery.Row} totalRecords={totalRecords} rowsPerPageOptions={[10, 25, 50, 100]} onPageChange={onPageChange} />
+            </div>
         </>);
 }
 

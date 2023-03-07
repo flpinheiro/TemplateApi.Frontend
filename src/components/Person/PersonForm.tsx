@@ -2,7 +2,7 @@ import { Person } from "../../models/person";
 import { InputText } from 'primereact/inputtext';
 import { Calendar } from 'primereact/calendar';
 import { Button } from 'primereact/button';
-import { useEffect, useState ,MouseEvent  } from "react";
+import { useEffect, useState, MouseEvent } from "react";
 
 const PersonForm = ({ onSubmit, id, person }: PersonFormProps) => {
     const [name, setName] = useState('')
@@ -67,9 +67,10 @@ const PersonForm = ({ onSubmit, id, person }: PersonFormProps) => {
                 <Calendar id="birthday" name="birthday" value={birthday} onChange={(e) => { setBirthday(e.target.value as Date ?? new Date()) }} dateFormat="dd/mm/yy" maxDate={new Date()} placeholder="enter birthday" />
                 <label htmlFor="cpf">birthday</label>
             </span>
-
-            <Button label="Submit" aria-label="Submit" />
-            <Button label="Reset" aria-label="Reset" onClick={handleReset} />
+            <span className="p-buttonset">
+                <Button label="Submit" aria-label="Submit" />
+                <Button label="Reset" aria-label="Reset" onClick={handleReset} />
+            </span>
         </div>
     </form>);
 }

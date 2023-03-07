@@ -1,9 +1,9 @@
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { useState } from "react";
-import { PersonQuery, PERSON_QUERY_INITIALIZER } from "../../models/person";
+import { Pagination, PAGINATION_INITIALIZER, PersonQuery, PERSON_QUERY_INITIALIZER } from "../../models/person";
 
-const PersonSearch = ({ setQuery, query }: PersonSearchProps) => {
+const PersonSearch = ({ setQuery, query, setPagesQuery }: PersonSearchProps) => {
     const [name, setName] = useState('');
     const [cpf, setCpf] = useState('');
 
@@ -17,6 +17,7 @@ const PersonSearch = ({ setQuery, query }: PersonSearchProps) => {
         setName('');
         setCpf('');
         setQuery(PERSON_QUERY_INITIALIZER);
+        setPagesQuery(PAGINATION_INITIALIZER);
     }
 
     return (<>
@@ -31,9 +32,10 @@ const PersonSearch = ({ setQuery, query }: PersonSearchProps) => {
                     <InputText id="cpf" name="cpf" onChange={(e) => setCpf(e.target.value)} value={cpf} />
                     <label htmlFor="cpf">CPF</label>
                 </span>
-
-                <Button label="Submit" aria-label="Submit" />
-                <Button label="Reset" aria-label="Reset" onClick={handleReset} />
+                <span className="p-buttonset">
+                    <Button label="Submit" aria-label="Submit" />
+                    <Button label="Reset" aria-label="Reset" onClick={handleReset} />
+                </span>
             </div>
         </form>
     </>);
@@ -41,6 +43,7 @@ const PersonSearch = ({ setQuery, query }: PersonSearchProps) => {
 
 export interface PersonSearchProps {
     setQuery: (state: PersonQuery) => void;
+    setPagesQuery: (state: Pagination) => void;
     query: PersonQuery;
 }
 

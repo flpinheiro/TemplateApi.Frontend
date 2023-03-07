@@ -25,3 +25,18 @@ export const PERSON_QUERY_INITIALIZER: PersonQuery = {
     name: '',
     cpf: '',
 }
+
+export interface Pagination{
+    Row: number;
+    Page: number;
+}
+
+export const PAGINATION_INITIALIZER : Pagination={
+    Page: 0,
+    Row: 10,
+}
+
+export interface PaginationResponse{
+    Pages: number;
+    Total: number;
+}
